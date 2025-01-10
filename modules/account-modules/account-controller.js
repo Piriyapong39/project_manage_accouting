@@ -1,13 +1,21 @@
 const Model = require("./account-model")
 
 class Accounting extends Model {
+
+    // declare variable
+    #limit = 10
+
     constructor(){
         super();
     }
     async getAccounting(req){
         try {
             const userId = req.user.id
-            return await this._getAccounting(userId)
+            const page = req.body.page
+            if(!page){
+                throw new Error("page is required")
+            }
+            return await this._getAccounting(userId, page, this.#limit)
         } catch (error) {
             throw error
         }
