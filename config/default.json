@@ -1,0 +1,5 @@
+{
+    "PORT": "8080",
+    "saltRound": 10,
+    "JWT_SECRET_KEY": "I_try_so_hard_I_got_sofa"
+}
