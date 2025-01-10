@@ -28,7 +28,14 @@ class Accounting extends Model {
             if(!bank_id){
                 throw new Error("you are missing bank id")
             }
-            return await this.__createAccounting(userId, bank_id, balance)
+            return await this._createAccounting(userId, bank_id, balance)
+        } catch (error) {
+            throw error
+        }
+    }
+    async deleteAccounting(){
+        try {
+            
         } catch (error) {
             throw error
         }

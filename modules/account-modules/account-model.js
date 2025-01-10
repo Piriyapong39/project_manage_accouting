@@ -4,8 +4,7 @@ class Model {
 
     async _getAccounting(userId, page, limit) {
         try {
-            const offset = (page - 1) * limit;
-            
+            const offset = (page - 1) * limit; 
             const results = await sequelize.query(
                 `
                     SELECT 
@@ -35,9 +34,22 @@ class Model {
             throw error;
         }
     }
-    async _createAccounting(){
+    async _createAccounting(userId, bank_id, balance){
         try {
-            
+            balance = balance || 0;
+            await sequelize.query(
+                `
+                    INSERT INTO tb_accounting (bank_id, user_id, balance)
+                    VALUES (:bank_id, :userId, :balance)
+                `,
+                {
+                    replacements: {
+                        bank_id, userId, balance
+                    },
+                    type: QueryTypes.INSERT
+                }
+            )
+            console.log(result)
         } catch (error) {
             throw error
         }
