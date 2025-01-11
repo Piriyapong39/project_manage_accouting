@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS public.tb_accounting
     bank_id bigint NOT NULL,
     user_id bigint NOT NULL,
     balance numeric(18,2) NOT NULL DEFAULT 0.00,
-    created_at time with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at time with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at timestamp with time zone NOT NULL DEFAULT now(),
+    updated_at timestamp with time zone NOT NULL DEFAULT now(),
     CONSTRAINT tb_accounting_pkey PRIMARY KEY (id),
     CONSTRAINT bank_id FOREIGN KEY (bank_id)
         REFERENCES public.tb_bank (id) MATCH SIMPLE

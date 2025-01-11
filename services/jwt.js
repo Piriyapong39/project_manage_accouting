@@ -18,7 +18,7 @@ class JwtService {
                 }, 
                 JWT_SECRET_KEY, 
                 { 
-                    expiresIn: 60 * 60 * 3
+                    expiresIn: 60 * 60 * 6
                 }
             );
             return token

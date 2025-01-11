@@ -1,11 +1,16 @@
 // import database
 const { sequelize, QueryTypes} = require("../../config/database")
 
+// import services
+const SaveFiles = require("../../services/save-file")
+const saveFiles = new SaveFiles();
+
 class Model {
     constructor(){}
     async _createTransaction(transactionForm){
         try {
-            console.log(transactionForm)
+            const transactionPicPath = saveFiles.saveTransactionImg(transactionForm)
+            return transactionPicPath
         } catch (error) {
             throw error
         }

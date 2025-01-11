@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS public.tb_transactions
     transaction_sub_type bigint NOT NULL,
     accounting_id bigint NOT NULL,
     amount numeric(18,2) NOT NULL,
-    created_at time with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at timestamp with time zone DEFAULT now(),
     transaction_slip_path text COLLATE pg_catalog."default",
     CONSTRAINT tb_transactions_pkey PRIMARY KEY (id),
     CONSTRAINT accounting_id FOREIGN KEY (accounting_id)
