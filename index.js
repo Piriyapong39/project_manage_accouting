@@ -15,11 +15,14 @@ app.get("/", (req, res) => {
 
 // import route
 const userRoute = require("./modules/user-modules/user-routes")
-const manageAccountRoute = require("./modules/account-modules/account-route")
+const accountingRoute = require("./modules/account-modules/account-route")
+const transactionRoute = require("./modules/transaction-modules/transaction-route")
 
-// all route
+
+// all routes
 app.use("/users", userRoute)
-app.use("/accounting", manageAccountRoute)
+app.use("/accounting", accountingRoute)
+app.use("/transaction", transactionRoute)
 
 app.listen(PORT, ()=>{
     console.log(`Server is running on port ${PORT}`)
