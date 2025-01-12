@@ -22,5 +22,12 @@ Router.delete("/delete-transaction", async(req, res) => {
         return res.status(400).json({error: error.message})
     }
 })
+Router.get("/get-data/:page", async (req, res) => {
+    try {
+        return res.status(200).json(await transaction.getTransactionData(req));
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+});
 
 module.exports = Router

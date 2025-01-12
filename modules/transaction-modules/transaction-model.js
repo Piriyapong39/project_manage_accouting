@@ -6,6 +6,7 @@ const ManageFiles = require("../../services/manage-file")
 const manageFiles = new ManageFiles();
 
 class Model {
+    #limit = 30
     constructor(){}
     async _createTransaction(transactionForm){
         try {
@@ -85,6 +86,30 @@ class Model {
             return response;
         } catch (error) {
             throw error;
+        }
+    }
+    async _getTransactionData(responseData){
+        try {
+            const { userId, page, filters } = responseData
+            const {
+                startTime,
+                endTime,
+                date,
+                month,
+                year,
+                bank_id,
+                transaction_type,
+            } = filters
+            condition =
+            const results = await sequelize.query(
+
+                `
+                    SE
+                `
+            )
+            return responseData
+        } catch (error) {
+            throw error
         }
     }
 }

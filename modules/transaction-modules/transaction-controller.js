@@ -72,6 +72,42 @@ class Transaction extends Model {
             throw error
         }
     }
+    async getTransactionData(req){
+        try {
+            const userId = req.user.id
+            const page = req.params.page;
+            if(!page){
+                throw new Error("page is required")
+            }
+            const{ 
+                startTime, 
+                endTime, 
+                date, 
+                month, 
+                year, 
+                bank_id, 
+                transaction_type, 
+                transaction_sub_type 
+            } = req.query
+            const responseData = {
+                userId,
+                page: Number(page),
+                filters: {
+                    startTime: startTime || null,
+                    endTime: endTime || null,
+                    date: date || null,
+                    month: month || null,
+                    year: year || null,
+                    bank_id: bank_id || null,
+                    transaction_type: transaction_type || null,
+                    transaction_sub_type: transaction_sub_type || null
+                },
+            }
+            return await this._getTransactionData(responseData)
+        } catch (error) {
+            throw error
+        }
+    }
 }
 
 const transaction = new Transaction();
