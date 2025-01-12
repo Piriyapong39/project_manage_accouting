@@ -17,7 +17,7 @@ class User extends Model {
                 throw new Error("Invalid email format.");
             }
             // check length password
-            if (password.length < 6) {
+            if (password.length <= 6) {
                 throw new Error("Password must be at least 6 characters long.");
             }
             return await this._userRegister(email, password, first_name, last_name)

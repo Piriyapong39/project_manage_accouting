@@ -26,7 +26,6 @@ class JwtService {
             throw error
         }
     }
-
     decodedToken(token){
         try {
             if(!token){

@@ -15,6 +15,12 @@ Router.post("/create-transaction", upload, async(req, res) => {
         return res.status(400).json({error: error.message})
     }
 })
-
+Router.delete("/delete-transaction", async(req, res) => {
+    try {
+        return res.status(200).json({message: await transaction.deleteTransaction(req)})
+    } catch (error) {
+        return res.status(400).json({error: error.message})
+    }
+})
 
 module.exports = Router
