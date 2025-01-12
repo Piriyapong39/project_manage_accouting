@@ -24,4 +24,5 @@
 
     - create method remove file             -- done
     - create and design total summary       -- in progress
-    - fix sql => in get data endpoint must start with tb_accounting and then find transaction *** start with userId
+    - fix sql => in get data endpoint must start with tb_accounting and then find transaction *** start with userId     -- in progress
+    - when create transaction must affect to balance in tb_account      -- in progress
