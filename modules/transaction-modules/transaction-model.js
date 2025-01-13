@@ -216,7 +216,7 @@ class Model {
                 replacements: params,
                 type: sequelize.QueryTypes.SELECT
             })
-            // console.log(results)
+            console.log(results)
             return {
                 results
             }

@@ -28,7 +28,12 @@
 
 13-1-25
 
-    - map response in get data          -- in progress
+    - map response in get data          -- done
     - if delete accounting => The transaction and slip will be deleted      -- done
     - create transaction fail but slip is saved         -- will fix it later
     - create and design total summary   -- in progress
+    - ignore get transaction endpoint  ******
+    - average using money per day       -- done
+    - total balance                     -- done
+    
+

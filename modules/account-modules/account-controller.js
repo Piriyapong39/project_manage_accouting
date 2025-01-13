@@ -8,18 +8,6 @@ class Accounting extends Model {
     constructor(){
         super();
     }
-    async getAccounting(req){
-        try {
-            const userId = req.user.id
-            const page = req.body.page
-            if(!page){
-                throw new Error("page is required")
-            }
-            return await this._getAccounting(userId, page, this.#limit)
-        } catch (error) {
-            throw error
-        }
-    }
     async createAccounting(req){
         try {
             const userId = req.user.id

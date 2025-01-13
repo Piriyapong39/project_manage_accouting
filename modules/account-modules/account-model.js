@@ -5,38 +5,6 @@ const { sequelize, QueryTypes} = require("../../config/database")
 const transaction = require("../transaction-modules/transaction-controller")
 class Model {
     constructor(){}
-
-    async _getAccounting(userId, page, limit) {
-        try {
-            const offset = (page - 1) * limit; 
-            const results = await sequelize.query(
-                `
-                    SELECT 
-                        a.id,
-                        a.bank_id,
-                        a.balance,
-                        b.bank_name
-                    FROM tb_accounting a
-                    INNER JOIN tb_bank b ON a.bank_id = b.id
-                    WHERE 1=1
-                        AND user_id = :userId
-                    ORDER BY a.id ASC
-                    LIMIT :limit OFFSET :offset
-                `,
-                {
-                    replacements: {
-                        userId,
-                        limit,
-                        offset
-                    },
-                    type: QueryTypes.SELECT
-                }
-            );
-            return results
-        } catch (error) {
-            throw error;
-        }
-    }
     async _createAccounting(userId, bank_id, balance){
         try {
 
