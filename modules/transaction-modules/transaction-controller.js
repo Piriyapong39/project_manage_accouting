@@ -69,17 +69,18 @@ class Transaction extends Model {
             }
             return await this._deleteTransaction(transactionId)
         } catch (error) {
+
             throw error
         }
     }
-    async getTransactionData(req){
+    async getTransactionData(req) {
         try {
             const userId = req.user.id
             const page = req.params.page;
-            if(!page){
+            if (!page) {
                 throw new Error("page is required")
             }
-            const{ 
+            const { 
                 startTime, 
                 endTime, 
                 date, 
@@ -87,7 +88,8 @@ class Transaction extends Model {
                 year, 
                 bank_id, 
                 transaction_type, 
-                transaction_sub_type 
+                transaction_sub_type,
+                accounting_id
             } = req.query
             const responseData = {
                 userId,
@@ -100,7 +102,8 @@ class Transaction extends Model {
                     year: year || null,
                     bank_id: bank_id || null,
                     transaction_type: transaction_type || null,
-                    transaction_sub_type: transaction_sub_type || null
+                    transaction_sub_type: transaction_sub_type || null,
+                    accounting_id: accounting_id || null
                 },
             }
             return await this._getTransactionData(responseData)

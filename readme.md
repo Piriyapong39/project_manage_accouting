@@ -22,7 +22,13 @@
 
 12-1-25
 
-    - create method remove file             -- done
-    - create and design total summary       -- in progress
-    - fix sql => in get data endpoint must start with tb_accounting and then find transaction *** start with userId     -- in progress
-    - when create transaction must affect to balance in tb_account      -- in progress
+    - create method remove file                                         -- done
+    - fix sql => in get data endpoint must start with tb_accounting and then find transaction *** start with userId     -- done
+    - when create transaction must affect to balance in tb_account      -- done
+
+13-1-25
+
+    - map response in get data          -- in progress
+    - if delete accounting => The transaction and slip will be deleted      -- done
+    - create transaction fail but slip is saved         -- will fix it later
+    - create and design total summary   -- in progress

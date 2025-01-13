@@ -1,4 +1,8 @@
+// import database
 const { sequelize, QueryTypes} = require("../../config/database")
+
+// import method deleteTransaction
+const transaction = require("../transaction-modules/transaction-controller")
 class Model {
     constructor(){}
 
@@ -53,32 +57,55 @@ class Model {
             throw error
         }
     }
-    async _deleteAccounting(userId, accounting_id){
+    async _deleteAccounting(userId, accounting_id) {
         try {
-            const result = await sequelize.query(
+            const transactions = await sequelize.query(
                 `
-                    DELETE 
-                    FROM tb_accounting
-                    WHERE 1=1
-                        AND user_id = :userId
-                        AND id = :accounting_id
+                SELECT transaction_id
+                FROM tb_transactions
+                WHERE accounting_id = :accounting_id;
                 `,
                 {
-                    replacements: {
-                        userId,
-                        accounting_id
-                    },
-                    type: QueryTypes.BULKDELETE
+                    replacements: { accounting_id },
+                    type: QueryTypes.SELECT
                 }
             )
-            if(result === 0){
-                throw new Error("accounting id is not found")
+            console.log(transactions)
+            if (transactions.length === 0) {
+                throw new Error("No transactions found for the specified accounting ID");
             }
-            return "delete accounting successfully"
+    
+            const transactionIds = transactions.map(transaction => transaction.transaction_id);
+            console.log(transactionIds)
+    
+            for (const transactionId of transactionIds) {
+                await transaction._deleteTransaction(transactionId)
+            }
+    
+            const results = await sequelize.query(
+                `
+                DELETE FROM tb_accounting
+                WHERE user_id = :userId
+                AND id = :accounting_id
+                RETURNING id;
+                `,
+                {
+                    replacements: { userId, accounting_id },
+                    type: QueryTypes.SELECT
+                }
+            );
+    
+            if (results.length === 0) {
+                throw new Error("Accounting ID is not found");
+            }
+    
+            console.log(results);
+            return "Delete accounting and its transactions successfully";
         } catch (error) {
-            throw error
+            throw error;
         }
     }
+    
 }
 
 module.exports = Model

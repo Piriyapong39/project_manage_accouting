@@ -6,10 +6,33 @@ const ManageFiles = require("../../services/manage-file")
 const manageFiles = new ManageFiles();
 
 class Model {
-    #limit = 30
+    #limit = 50
     constructor(){}
     async _createTransaction(transactionForm){
         try {
+
+            // if transaction type is expense => check balance in tb_accounting first
+            const lastestBalacne = await sequelize.query(
+                `
+                    SELECT
+                        balance
+                    FROM tb_accounting
+                    WHERE id = :accounting_id
+                `,
+                {
+                    replacements: {
+                        accounting_id: transactionForm.accounting_id
+                    },
+                    type: QueryTypes.SELECT
+                }
+            )
+            if(transactionForm.transaction_type === 2){
+                if((Number(lastestBalacne[0].balance) + transactionForm.amount) < 0){
+                    throw new Error("expense is more than balance")
+                }
+            }
+
+            // create transaction and slip
             let transactionPicPath = await manageFiles.saveTransactionImg(transactionForm)
             const slipPath = transactionPicPath?.picPath || null;
             await sequelize.query(
@@ -47,6 +70,24 @@ class Model {
                 }
             )
             let slipMessage = transactionPicPath.error || (slipPath ? "Slip saved successfully" : "No slip provided");    
+
+            // update balance in tb_accounting
+            const totalBalance = Number(lastestBalacne[0].balance) + transactionForm.amount
+            await sequelize.query(
+                `
+                    UPDATE tb_accounting
+                    SET 
+                        balance = :totalBalance,
+                        updated_at = now()
+                    WHERE id = :acoounting_id
+                `,{
+                    replacements: {
+                        totalBalance,
+                        acoounting_id: transactionForm.accounting_id
+                    },
+                    type: QueryTypes.UPDATE
+                }
+            )
             return {
                 message: "Created transaction successfully",
                 slipStatus: slipMessage
@@ -88,7 +129,7 @@ class Model {
             throw error;
         }
     }
-    async _getTransactionData(responseData){
+    async _getTransactionData(responseData) {
         try {
             const { userId, page, filters } = responseData
             const {
@@ -99,35 +140,86 @@ class Model {
                 year,
                 bank_id,
                 transaction_type,
+                transaction_sub_type,
+                accounting_id
             } = filters
-            // condition =
-            const results = await sequelize.query(
 
-                `
-                    SELECT 
-                        tt.transaction_id,
-                        tt.note,
-                        tt.transaction_type,
-                        tt.transaction_sub_type,
-                        ttype.transaction_type_name,
-                        tt.amount,
-                        tt.accounting_id,
-                        tt.created_at,
-                        ta.bank_id,
-                        ta.balance,
-                        tb.bank_name
-                    FROM tb_transactions tt
-                    INNER JOIN tb_accounting ta ON tt.accounting_id = ta.id
-                    INNER JOIN tb_bank tb ON ta.bank_id = tb.id
-                    INNER JOIN tb_transaction_type ttype ON (tt.transaction_type = ttype.transaction_type AND tt.transaction_sub_type = ttype.transaction_sub_type)
-                    WHERE 1=1
-                        -- AND created_at BETWEEN '2025-01-12 10:00' AND '2025-01-12 12:00'
-                        AND tt.accounting_id = 17
-                    ORDER BY created_at DESC
-                    LIMIT 10 OFFSET 0;
-                `
-            )
-            return responseData
+            const offset = (page - 1) * this.#limit
+
+            let conditions = []
+            let params = []
+    
+            conditions.push('ta.user_id = ?')
+            params.push(userId)
+    
+            if(accounting_id){
+                conditions.push('tt.accounting_id = ?')
+                params.push(accounting_id)
+            }
+            if (startTime && endTime) {
+                conditions.push('tt.created_at BETWEEN ? AND ?')
+                params.push(startTime, endTime)
+            }
+    
+            if (date) {
+                conditions.push('DATE(tt.created_at) = ?')
+                params.push(date)
+            }
+    
+            if (month && year) {
+                conditions.push('EXTRACT(MONTH FROM tt.created_at) = ? AND EXTRACT(YEAR FROM tt.created_at) = ?')
+                params.push(month, year)
+            }
+    
+            if (bank_id) {
+                conditions.push('ta.bank_id = ?')
+                params.push(bank_id)
+            }
+    
+            if (transaction_type) {
+                conditions.push('tt.transaction_type = ?')
+                params.push(transaction_type)
+            }
+    
+            if (transaction_sub_type) {
+                conditions.push('tt.transaction_sub_type = ?')
+                params.push(transaction_sub_type)
+            }
+    
+            const query = `
+                SELECT 
+                    tt.transaction_id,
+                    tt.note,
+                    tt.transaction_type,
+                    tt.transaction_sub_type,
+                    ttype.transaction_type_name,
+                    tt.amount,
+                    tt.accounting_id,
+                    tt.created_at,
+                    ta.bank_id,
+                    tb.bank_name,
+                    ta.balance
+                FROM tb_transactions tt
+                INNER JOIN tb_accounting ta ON tt.accounting_id = ta.id
+                INNER JOIN tb_bank tb ON ta.bank_id = tb.id
+                INNER JOIN tb_transaction_type ttype ON (tt.transaction_type = ttype.transaction_type 
+                    AND tt.transaction_sub_type = ttype.transaction_sub_type)
+                WHERE ${conditions.join(' AND ')}
+                ORDER BY tt.created_at DESC
+                LIMIT ? OFFSET ?
+            `
+            params.push(this.#limit, offset)
+    
+            // console.log(conditions)
+            // console.log(params)
+            const results = await sequelize.query(query, {
+                replacements: params,
+                type: sequelize.QueryTypes.SELECT
+            })
+            // console.log(results)
+            return {
+                results
+            }
         } catch (error) {
             throw error
         }
