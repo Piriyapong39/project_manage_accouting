@@ -17,7 +17,7 @@ app.get("/", (req, res) => {
 const userRoute = require("./modules/user-modules/user-routes")
 const accountingRoute = require("./modules/account-modules/account-route")
 const transactionRoute = require("./modules/transaction-modules/transaction-route")
-const summaryRoute = require("./modules/sumary-modules/summary-route")
+const summaryRoute = require("./modules/summary-modules/summary-route")
 
 
 // all routes

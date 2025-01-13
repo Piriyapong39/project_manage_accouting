@@ -69,7 +69,6 @@ class Transaction extends Model {
             }
             return await this._deleteTransaction(transactionId)
         } catch (error) {
-
             throw error
         }
     }
