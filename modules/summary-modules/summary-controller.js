@@ -47,7 +47,6 @@ class Summary extends Model {
             if(!accountingId){
                 throw new Error("accounting id is required");
             }
-
             return await this._getTransactionData(page, accountingId, filters)
         } catch (error) {
             throw error

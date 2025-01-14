@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    container_name: backend-manage-accounting
+    environment:
+      DB_HOST: postgres 
+      DB_USER: myuser
+      DB_PASSWORD: mypassword
+      DB_NAME: MANAGE_ACCOUNTING
+      PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - postgres_network  
+    restart: unless-stopped
+
+networks:
+  postgres_network:
+    external: true
+    name: project-golang-postgresql_default 

@@ -38,13 +38,13 @@ class Model {
                     type: QueryTypes.SELECT
                 }
             )
-            console.log(transactions)
+            // console.log(transactions)
             if (transactions.length === 0) {
                 throw new Error("No transactions found for the specified accounting ID");
             }
     
             const transactionIds = transactions.map(transaction => transaction.transaction_id);
-            console.log(transactionIds)
+            // console.log(transactionIds)
     
             for (const transactionId of transactionIds) {
                 await transaction._deleteTransaction(transactionId)

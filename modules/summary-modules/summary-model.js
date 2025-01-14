@@ -3,6 +3,7 @@ const { sequelize, QueryTypes} = require("../../config/database")
 // import service 
 const FindDate = require("../../services/days-in-moth")
 const findDate = new FindDate();
+const convertTime = require("../../services/convert-time-zone")
 class Model {
 
     #limit = 10
@@ -64,10 +65,14 @@ class Model {
             const totalBalance = resultsBalance.reduce((acc, { balance }) => acc + parseFloat(balance), 0);
             const averageSpendPerDay = parseFloat((totalBalance / (this.totalDays - this.dateNow)).toFixed(2))
 
+            const countAccounting = results.length
+
             const responseData = {
                 totalBalance,
                 averageSpendPerDay,
-                accounting: results
+                countAccounting,
+                accounting: results,
+
             }
             return responseData
         } catch (error) {
@@ -139,7 +144,6 @@ class Model {
                     replacementData.transaction_sub_type = filters.transaction_sub_type;
                 }
             }
-    
             const query = `
                 SELECT 
                     tt.transaction_id,
@@ -162,13 +166,36 @@ class Model {
                 LIMIT ${this.#limitTransaction}
                 OFFSET ${offset}
             `;
-    
-            const result = await sequelize.query(query, {
+
+
+            const results = await sequelize.query(query, {
                 replacements: replacementData,
                 type: QueryTypes.SELECT
             });
-    
-            return result;
+
+            for(const result of results){
+                result.created_at = convertTime.convertToThaiTime(result.created_at)  
+            }
+       
+            
+
+            const incomeTransaction = results
+                .filter(e => e.transaction_type == 1) 
+                .reduce((acc, { amount }) => acc + parseFloat(amount), 0); 
+            
+            const expenseTransaction = results
+                .filter(e => e.transaction_type == 2)
+                .reduce((acc, { amount }) => acc + parseFloat(amount), 0)
+            const totalSummary = incomeTransaction + expenseTransaction
+            
+            const responseData = {
+                incomeTransaction,
+                expenseTransaction,
+                totalSummary,
+                countTransaction: results.length,
+                results
+            }
+            return responseData;
         } catch (error) {
             throw error;
         }

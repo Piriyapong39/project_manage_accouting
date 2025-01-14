@@ -6,6 +6,8 @@ const Model = require("./transaction-model")
 
 // import services
 const detectProfanityService = require("../../services/detect-profanity")
+const ManageFiles = require("../../services/manage-file")
+const manageFiles = new ManageFiles();
 
 class Transaction extends Model {
     constructor(){
@@ -72,6 +74,85 @@ class Transaction extends Model {
             throw error
         }
     }
+    async uploadTransaction(req){
+        try {
+            const accountingId = Number(req.body.accounting_id)
+            const files = req.files
+
+            if(!accountingId){
+                throw new Error("accounting id is required")
+            }
+
+            if (!files || files.length !== 1) {
+                throw new Error("can upload only 1 file")
+            }
+
+            const namePart = files[0].originalname.split(".")
+            const extName = namePart[namePart.length - 1]
+
+            if(extName !== "xlsx"){
+                throw new Error("only xlsx file is allowed")
+            }
+
+            const results = await manageFiles.readXlsxFile(files)
+            // console.log(results)
+
+            for(const result of results){
+
+                const transaction_type = Number(result.transaction_type)
+                const transaction_sub_type = Number(result.transaction_sub_type)
+                const amount = Number(result.amount)
+
+                if(!result.note || !result.transaction_type || !result.transaction_sub_type || !result.amount){
+                    throw new Error("You are missing some fields")
+                }
+                if(transaction_type != 1 && transaction_type != 2){
+                    throw new Error("transaction type must be 1 or 2")
+                }
+
+                if(transaction_type == 1){
+                    if(transaction_sub_type < 1 || transaction_sub_type > 5){
+                        throw new Error("transaction_sub_type in tranasction_type 1 must be between 1-5")
+                    }
+                    if(amount < 0){
+                        throw new Error("income must more than 0")
+                    }
+                }
+                if(transaction_type == 2){
+                    if(transaction_sub_type < 1 || transaction_sub_type > 8){
+                        throw new Error("transaction_sub_type in tranasction_type 2 must be between 1-8")
+                    }
+                    if(amount > 0){
+                        throw new Error("expense must less than 0")
+                    }
+                }
+
+                result.accounting_id = accountingId
+                result.newNote = detectProfanityService.censorBadWords(result.note)
+                result.transaction_id = uuidv4();
+
+                await this._createTransaction(result)
+            }     
+
+            return "insert data successfully"
+        } catch (error) {
+            throw error
+        }
+    }
+    async exportTransaction(req){
+        try {
+            const accountingId = req.body.accounting_id
+            if(!accountingId){
+                throw new Error("accounting id is required")
+            }
+            return await this._exportTransaction(accountingId)
+        } catch (error) {
+            throw error
+        }
+    }
+
+
+/*
     async getTransactionData(req) {
         try {
             const userId = req.user.id
@@ -110,6 +191,7 @@ class Transaction extends Model {
             throw error
         }
     }
+*/
 }
 
 const transaction = new Transaction();

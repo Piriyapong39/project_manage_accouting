@@ -31,9 +31,18 @@
     - map response in get data          -- done
     - if delete accounting => The transaction and slip will be deleted      -- done
     - create transaction fail but slip is saved         -- will fix it later
-    - create and design total summary   -- in progress
+    - create and design total summary   -- done
     - ignore get transaction endpoint  ******
     - average using money per day       -- done
     - total balance                     -- done
     
 
+14-1-25
+
+    - create import exel function           -- done
+    - creat export exel function            -- done
+    - create dockerfile                     -- done
+
+15
+
+    - test all check list       -- in progress

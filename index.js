@@ -19,7 +19,6 @@ const accountingRoute = require("./modules/account-modules/account-route")
 const transactionRoute = require("./modules/transaction-modules/transaction-route")
 const summaryRoute = require("./modules/summary-modules/summary-route")
 
-
 // all routes
 app.use("/users", userRoute)
 app.use("/accounting", accountingRoute)
