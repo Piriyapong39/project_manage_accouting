@@ -1,48 +1,72 @@
 10-1-25
 
-    - login and register route          -- done
-    - create service jwt                -- done
-    - create authentication middleware  -- done
-    - design accounting table           -- done
+    - login and register route                                              -- done
+    - create service jwt                                                    -- done
+    - create authentication middleware                                      -- done
+    - design accounting table                                               -- done
     - create accounting route           
-        - delete accouning endpoint     -- done
-        - create accointing endpoint    -- done
+        - delete accouning endpoint                                         -- done
+        - create accointing endpoint                                        -- done
 
 11-1-25
 
-    - design transaction table                                          -- done
-    - create tb_transaction_type                                        -- done
+    - design transaction table                                              -- done
+    - create tb_transaction_type                                            -- done
     - create transaction route      
-        - create transaction                                            -- done
-        - delete transaction                                            -- done
-        - create upload slip                                            -- done
-        - create and design folder and path to save transaction slip    -- done
-    - create detect profanity string service                            -- done
-    - fix created_at, updated_at in database                            -- done
+        - create transaction                                                -- done
+        - delete transaction                                                -- done
+        - create upload slip                                                -- done
+        - create and design folder and path to save transaction slip        -- done
+    - create detect profanity string service                                -- done
+    - fix created_at, updated_at in database                                -- done
 
 12-1-25
 
-    - create method remove file                                         -- done
-    - fix sql => in get data endpoint must start with tb_accounting and then find transaction *** start with userId     -- done
-    - when create transaction must affect to balance in tb_account      -- done
+    - create method remove file                                             -- done
+    - fix sql => in get data endpoint                                       -- done
+    - when create transaction must affect to balance in tb_account          -- done
 
 13-1-25
 
-    - map response in get data          -- done
-    - if delete accounting => The transaction and slip will be deleted      -- done
-    - create transaction fail but slip is saved         -- will fix it later
-    - create and design total summary   -- done
-    - ignore get transaction endpoint  ******
-    - average using money per day       -- done
-    - total balance                     -- done
+    - map response in get data                                              -- done
+    - if delete accounting => The transaction and slip will be deleted      -- done     
+    - create and design total summary                                       -- done
+    - ignore get transaction endpoint                                       -- done
+    - average using money per day                                           -- done
+    - total balance                                                         -- done
     
 
 14-1-25
 
-    - create import exel function           -- done
-    - creat export exel function            -- done
-    - create dockerfile                     -- done
+    - create import exel function                                           -- done
+    - creat export exel function                                            -- done
+    - create dockerfile                                                     -- done
 
 15
 
-    - test all check list       -- in progress
+    - test all check list                     
+        - login register system     
+        - create and delete accounting system
+        - create and delete transaction system
+        - summary system
+        - filter trasnsction by 
+            date, 
+            month, 
+            year, 
+            start - end, 
+            type_of_transaction, 
+            accouting 
+        - import transaction slip system
+        - censor badword system
+        - api list must return in pagination type
+            - in accouting route return 10 rows
+            - in transaction route 50 rows
+        - config => .env
+        - validation all query
+        - export transaction system
+        - import transaction system
+        - summary total balance and calculate average spend money per day
+        - test docker
+        
+
+        
