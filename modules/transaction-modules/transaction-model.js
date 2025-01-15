@@ -129,46 +129,52 @@ class Model {
             throw error;
         }
     }
-    async _exportTransaction(accountingId){
+    async _exportTransaction(accountingId) {
+        if (!accountingId) {
+            throw new Error("accounting ID is required");
+        }
+    
         try {
             const results = await sequelize.query(
                 `
-                    SELECT 
-                        tt.transaction_id,
-                        tt.note,
-                        tt.transaction_type,
-                        tt.transaction_sub_type,
-                        ttype.transaction_type_name,
-                        tt.amount,
-                        tt.created_at
-                    FROM tb_transactions tt 
-                    INNER JOIN tb_transaction_type ttype ON (
-                                tt.transaction_type = ttype.transaction_type 
-                                AND tt.transaction_sub_type = tt.transaction_sub_type
-                            )
-                    WHERE 1=1
-                        AND tt.accounting_id = :accountingId
-                    ORDER BY tt.created_at DESC
-                
+                SELECT 
+                    tt.transaction_id,
+                    tt.note,
+                    tt.transaction_type,
+                    tt.transaction_sub_type,
+                    ttype.transaction_type_name,
+                    tt.amount,
+                    tt.created_at
+                FROM tb_transactions tt 
+                INNER JOIN tb_transaction_type ttype ON (
+                    tt.transaction_type = ttype.transaction_type 
+                    AND tt.transaction_sub_type = ttype.transaction_sub_type
+                )
+                WHERE tt.accounting_id = :accountingId
+                ORDER BY tt.created_at DESC
                 `,
                 {
-                    replacements: {
-                        accountingId
-                    },
+                    replacements: { accountingId },
                     type: QueryTypes.SELECT
                 }
-            )
-            if(results.length === 0){
-                throw new Error("results are not found")
+            );
+    
+            if (results.length === 0) {
+                throw new Error("transaction is not found");
             }
-            for(const result of results){
-                result.created_at = convertTime.convertToThaiTime(result.created_at)
+    
+            try {
+                for (const result of results) {
+                    result.created_at = convertTime.convertToThaiTime(result.created_at);
+                }
+    
+                const path = await manageFiles.generateExcel(results, accountingId);
+                return path;
+            } catch (error) {
+                throw new Error(error);
             }
-
-            const path = await manageFiles.generateExcel(results, accountingId)
-            return path
         } catch (error) {
-            throw error
+            throw error;
         }
     }
 

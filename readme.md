@@ -42,31 +42,34 @@
     - creat export exel function                                            -- done
     - create dockerfile                                                     -- done
 
-15
+15-1-25
 
+    - fix sql logic in export transaction                                   -- done
     - test all check list                     
-        - login register system     
-        - create and delete accounting system
-        - create and delete transaction system
+        - login register system                                             -- done
+        - create and delete accounting system                               -- done
+        - create and delete transaction system                              -- done
         - summary system
         - filter trasnsction by 
-            date, 
-            month, 
+            transaction_id,                                                 -- done
+            date,                                                           -- done
+            month,                                                          -- done
             year, 
-            start - end, 
-            type_of_transaction, 
-            accouting 
-        - import transaction slip system
-        - censor badword system
+            startTime - endTime,                                            -- done
+            type_of_transaction,                                            -- done
+            accouting
+        - import transaction slip system                                    -- done
+        - censor badword system                                             -- done
         - api list must return in pagination type
-            - in accouting route return 10 rows
-            - in transaction route 50 rows
-        - config => .env
-        - validation all query
-        - export transaction system
-        - import transaction system
-        - summary total balance and calculate average spend money per day
+            - in accouting route return 10 rows                             -- done                      
+            - in transaction route 50 rows                                  -- done
+        - config => .env                                                    -- done
+        - validation all query                                              -- done
+        - export transaction system                                         -- done
+        - import transaction system                                         -- done
+        - summary total balance and calculate average spend money per day   -- done
         - test docker
+    
         
 
         
